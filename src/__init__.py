@@ -31,7 +31,8 @@ def index():
 
 @app.route('/get_jobs', methods=['GET'])
 def get_jobs():  # 获取
-    data = tasks()
+    all = request.args.get('all', None)
+    data = tasks(all)
     ret = {"code": 0, "data": data, "msg": ""}
 
     return jsonify(ret)

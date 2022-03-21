@@ -7,15 +7,20 @@ from src.service.task import bidItemPrice
 import datetime
 
 
-def tasks():
+def tasks(all=None):
     jobs = scheduler.get_jobs()
     user = request.cookies.get("username")
     l = []
     for i in jobs:
-        if user==i.args[2]:
+        if all:
             d = {'item_name': i.name, 'itemid': i.id, 'price': i.args[1],
                  'run_date': datetime.datetime.strftime(i.trigger.run_date, '%Y-%m-%d %H:%M:%S')}
             l.append(d)
+        else:
+            if user == i.args[2]:
+                d = {'item_name': i.name, 'itemid': i.id, 'price': i.args[1],
+                     'run_date': datetime.datetime.strftime(i.trigger.run_date, '%Y-%m-%d %H:%M:%S')}
+                l.append(d)
     return l
 
 
