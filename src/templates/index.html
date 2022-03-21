@@ -38,14 +38,18 @@
             </div>
         </div>
         <div class="layui-inline">
-            <div class="layui-input-inline">
-                <button type="submit" class="layui-btn" lay-submit="" lay-filter="login">登录</button>
+            <div class="layui-input-inline" style="width:60px">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="login" >登录</button>
             </div>
-            <!--            <label id='user' class="layui-form-label"></label>-->
+        </div>
+        <div class="layui-inline">
+            <div class="layui-input-inline">
+                <button type="submit" class="layui-btn" lay-submit="" lay-filter="logout">退出</button>
+            </div>
 
         </div>
         <div class="layui-inline">
-            <p  id="user" style="color:orange"></p>
+            <p id="user" style="color:orange"></p>
         </div>
 
         <!--        <div class="layui-inline">-->
@@ -85,7 +89,7 @@
             </div>
         </div>
 
-                <div class="layui-inline">
+        <div class="layui-inline">
             <label class="layui-form-label">金额</label>
             <div class="layui-input-inline">
                 <input id='price' type="text" name="price" placeholder="金额" value="2"
@@ -110,29 +114,29 @@
         <!--        </div>-->
     </div>
 
-<!--***********-->
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
-    <legend>任务列表</legend>
-</fieldset>
+    <!--***********-->
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 50px;">
+        <legend>任务列表</legend>
+    </fieldset>
 </form>
-<table class="layui-table" lay-data="{width: 900, height:330, url:'/get_jobs', page:false, id:'idTest'}" lay-filter="demo">
-  <thead>
+<table class="layui-table" lay-data="{width: 900, height:330, url:'/get_jobs', page:false, id:'idTest'}"
+       lay-filter="demo">
+    <thead>
     <tr>
-<!--      <th lay-data="{type:'checkbox', fixed: 'left'}"></th>-->
-      <th lay-data="{field:'itemid', width:100, sort: true}">商品id</th>
-      <th lay-data="{field:'item_name', width:400}">名称</th>
-      <th lay-data="{field:'price', width:80, sort: true}">价格</th>
-      <th lay-data="{field:'run_date', width:200}">出价时间</th>
-
-      <th lay-data="{fixed: 'right', width:100, align:'center', toolbar: '#barDemo'}">操作</th>
+        <!--      <th lay-data="{type:'checkbox', fixed: 'left'}"></th>-->
+        <th lay-data="{field:'itemid', width:100, sort: true}">商品id</th>
+        <th lay-data="{field:'item_name', width:400}">名称</th>
+        <th lay-data="{field:'price', width:80, sort: true}">价格</th>
+        <th lay-data="{field:'run_date', width:200}">出价时间</th>
+        <th lay-data="{fixed: 'right', width:100, align:'center', toolbar: '#barDemo'}">操作</th>
     </tr>
-  </thead>
+    </thead>
 </table>
 
 <script type="text/html" id="barDemo">
-<!--  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
-<!--  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
-  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <!--  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+    <!--  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 
 <script src="//unpkg.com/layui@2.6.8/dist/layui.js" charset="utf-8"></script>
@@ -187,10 +191,11 @@ layui.use(['form', 'layedit', 'laydate'], function(){
     $.post("/login",JSON.stringify(data.field),function(res){
     　　if(res.code==0){
         layer.msg('登录成功');
-<!--        $('#username').addClass('layui-disabled')-->
-<!--        $('#password').addClass('layui-disabled')-->
+        $('#username').addClass('layui-disabled')
+        $('#password').addClass('layui-disabled')
+        $('#username').attr("disabled",'disabled');
+        $('#password').attr("disabled",'disabled');
         $('#user').text(res.user)
-
 
     }
     　　else{
@@ -201,6 +206,17 @@ layui.use(['form', 'layedit', 'laydate'], function(){
     },"json");
     return false;
   });
+
+  //退出
+  form.on('submit(logout)', function(data){
+    delCookie('username')
+    $('#username').removeClass('layui-disabled')
+    $('#password').removeClass('layui-disabled')
+    $('#username').removeAttr("disabled");
+    $('#password').removeAttr("disabled");
+    $('#user').text("")
+  });
+
 
 
   //监听添加
@@ -298,6 +314,15 @@ layui.use('table', function(){
   });
 });
 
+function delCookie(name)
+{
+var exp = new Date();
+exp.setTime(exp.getTime() - 1);
+var cval=getCookie(name);
+if(cval!=null)
+document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+}
+
 function getCookie(name) {
     var prefix = name + "="
     var start = document.cookie.indexOf(prefix)
@@ -318,9 +343,16 @@ function getCookie(name) {
 window.onload=function(){
     var username=getCookie('username')
     if(username){
+        $('#username').addClass('layui-disabled')
+        $('#username').val(username)
+        $('#password').addClass('layui-disabled')
+        $('#password').val(username)
+        $('#username').attr("disabled",'disabled');
+        $('#password').attr("disabled",'disabled');
         $('#user').text(username)
     }
 }
+
 </script>
 </body>
 </html>

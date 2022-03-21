@@ -34,7 +34,7 @@ def bidItemPrice(itemid, price, user):
         "Referer": "http://www.cardhobby.com/market/item/%s" % itemid,
     }
     ret = requests.post(url, params=params, headers=headers, cookies=User[user])
-    logging.info("商品id：%s 出价结果：%s" % (itemid, ret.text))
+    logging.info("【出价】商品id：%s 入参：%s 出价结果：%s" % (itemid, params,ret.text))
 
 
 if __name__ == '__main__':
