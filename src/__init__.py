@@ -1,7 +1,9 @@
 # !/usr/bin/env python
 # -*- encoding:utf-8 -*-
 import json
+import os
 import pickle
+from logging.handlers import TimedRotatingFileHandler
 
 from flask import Flask, request, make_response, jsonify, render_template
 from flask_apscheduler import APScheduler  # 主要插件
@@ -17,7 +19,25 @@ from src.service.task import Login
 
 scheduler.init_app(app=app)
 scheduler.start()
+# 增加日志模块
 
+# 设置日志等级
+logging.basicConfig(level="INFO")
+# 创建日志记录器，指明日志保存的路径、每个日志文件的最大大小、保存的日志文件个数上限
+# file_log_handler=RotatingFileHandler('log/log',maxBytes=1024 * 1024 * 300, backupCount=10)
+
+# 按照时间分隔日志
+log_path='logs'
+if not os.path.isdir(log_path):
+    os.mkdir(log_path)
+file_log_handler = TimedRotatingFileHandler(log_path+'/info.log', when='D', )
+
+# 创建日志记录的格式 日志等级 输入日志信息的文件名 行数 日志信息
+formatter = logging.Formatter('%(levelname)s %(filename)s:%(lineno)d %(message)s')
+# 为刚创建的日志记录器设置日志记录格式
+file_log_handler.setFormatter(formatter)
+# 为全局的日志工具对象（flaskapp使用的）添加日志记录器
+logging.getLogger().addHandler(file_log_handler)
 
 def task1(a, b):
     print('mission_1_', a, b)

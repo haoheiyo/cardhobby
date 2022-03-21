@@ -1,9 +1,11 @@
 # !/usr/bin/env python
 # -*- encoding:utf-8 -*-
+import logging
+
 import requests
 from flask import request
 
-from src import scheduler, logger
+from src import scheduler
 from src.user import User
 
 
@@ -17,9 +19,9 @@ def Login(username, password):
     ret = requests.post(url, params=params, headers=headers, allow_redirects=False)
     cookies = ret.cookies
     cookies = requests.utils.dict_from_cookiejar(cookies)
-
     if 'userid' in cookies:
         User[username] = cookies
+        logging.info("登录成功")
         return username
 
 
@@ -32,7 +34,7 @@ def bidItemPrice(itemid, price, user):
         "Referer": "http://www.cardhobby.com/market/item/%s" % itemid,
     }
     ret = requests.post(url, params=params, headers=headers, cookies=User[user])
-    logger.info(ret.text)
+    logging.info("出价结果：%s" % ret.text)
 
 
 if __name__ == '__main__':

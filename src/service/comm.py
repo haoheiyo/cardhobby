@@ -1,9 +1,10 @@
 # !/usr/bin/env python
 # -*- encoding:utf-8 -*-
 import functools
+import logging
 import traceback
 
-from flask import request,jsonify
+from flask import request, jsonify
 import requests
 
 from src import logger
@@ -29,6 +30,7 @@ def get_item_info(itemid):
          "img": img,
          "endtime": endtime,
          "price": price.strip()}
+    logging.info("商品详情：%s" % str(d))
     return d
 
 
@@ -36,6 +38,7 @@ def auto_try(func):
     """
     自动捕获异常
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
 
@@ -43,9 +46,10 @@ def auto_try(func):
             return func(*args, **kwargs)
         except Exception as e:
             logger.info("服务异常：%s" % traceback.format_exc())
-            return jsonify({"code":500,"msg":"系统错误，请联系管理员"})
+            return jsonify({"code": 500, "msg": "系统错误，请联系管理员"})
 
     return wrapper
+
 
 if __name__ == '__main__':
     print(get_item_info('11870495'))
