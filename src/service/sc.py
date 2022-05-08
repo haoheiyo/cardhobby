@@ -13,13 +13,15 @@ def tasks(all=None):
     l = []
     for i in jobs:
         if all:
-            d = {'item_name': '<a href="http://www.cardhobby.com/market/item/%s" target="_blank">%s</a>' % (i.id, i.name),
+            d = {'item_name': '<a href="http://www.cardhobby.com/market/item/%s" target="_blank">%s</a>' % (
+                i.id, i.name),
                  'itemid': i.id, 'price': i.args[1],
                  'run_date': datetime.datetime.strftime(i.trigger.run_date, '%Y-%m-%d %H:%M:%S')}
             l.append(d)
         else:
             if user == i.args[2]:
-                d = {'item_name': '<a href="http://www.cardhobby.com/market/item/%s" target="_blank">%s</a>' % (i.id, i.name),
+                d = {'item_name': '<a href="http://www.cardhobby.com/market/item/%s" target="_blank">%s</a>' % (
+                    i.id, i.name),
                      'itemid': i.id, 'price': i.args[1],
                      'run_date': datetime.datetime.strftime(i.trigger.run_date, '%Y-%m-%d %H:%M:%S')}
                 l.append(d)
@@ -36,7 +38,7 @@ def add(itemid, item_name, price, remaining_time, end_time):
     t = datetime.timedelta(seconds=int(remaining_time))
     run_date = end_time - t
     scheduler.add_job(func=bidItemPrice, id=itemid, name=item_name, args=(itemid, price, user), trigger='date',
-                      run_date=run_date, replace_existing=True)
+                      jobstore='redis', run_date=run_date, replace_existing=True)
 
     return 'sucess'
 

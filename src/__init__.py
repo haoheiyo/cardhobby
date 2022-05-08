@@ -5,19 +5,43 @@ import os
 import pickle
 from logging.handlers import TimedRotatingFileHandler
 
+from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
+from apscheduler.jobstores.redis import RedisJobStore
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, request, make_response, jsonify, render_template
 from flask_apscheduler import APScheduler  # 主要插件
 import datetime
 import logging
 
+
+def scheduler_init():
+    REDIS = {
+        'host': '137.184.139.209',
+        'port': '6379',
+        'db': 2,
+        'password': '123456'
+    }
+    jobstores = {
+        'redis': RedisJobStore(**REDIS)
+    }
+
+    executors = {
+        'default': ThreadPoolExecutor(10),  # 默认线程数
+        'processpool': ProcessPoolExecutor(3)  # 默认进程
+    }
+    return BackgroundScheduler(timezone='Asia/Shanghai', jobstores=jobstores, executors=executors)
+
+
 app = Flask(__name__)
-scheduler = APScheduler()
+# scheduler = APScheduler()
+scheduler = scheduler_init()
+
 logger = logging.getLogger(__name__)
 from src.service.comm import get_item_info, auto_try
 from src.service.sc import add, tasks, remove
 from src.service.task import Login
 
-scheduler.init_app(app=app)
+# scheduler.init_app(app=app)
 scheduler.start()
 
 # 设置日志等级
@@ -89,6 +113,18 @@ def item_info():
     itemid = request.args.get('itemid')
     ret = get_item_info(itemid)
     return jsonify(ret)
+
+
+def func(a, b):
+    logging.info("任务执行")
+    return a + b
+
+
+@app.route('/test', methods=['GET'])
+def test():
+    scheduler.add_job(func=func, id="1", name="item_name", args=(1, 2), trigger='date', jobstore='redis',
+                      run_date='2022-05-07 21:46:40', replace_existing=True)
+    return "ok"
 
 
 if __name__ == '__main__':
