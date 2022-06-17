@@ -13,12 +13,12 @@ from lxml import html
 
 
 def get_item_info(itemid):
-    url = "http://www.cardhobby.com/market/item/%s" % itemid
+    url = "http://www.cardhobby.com.cn/market/item/%s" % itemid
     user = request.cookies.get("username")
     # user = '18140563517'
     headers = {
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
-        "Referer": "http://www.cardhobby.com/Verify/index",
+        "Referer": "http://www.cardhobby.com.cn/Verify/index",
     }
     ret = requests.get(url, headers=headers, cookies=User[user])
     tree = html.fromstring(ret.text)

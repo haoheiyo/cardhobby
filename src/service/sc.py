@@ -13,14 +13,14 @@ def tasks(all=None):
     l = []
     for i in jobs:
         if all:
-            d = {'item_name': '<a href="http://www.cardhobby.com/market/item/%s" target="_blank">%s</a>' % (
+            d = {'item_name': '<a href="http://www.cardhobby.com.cn/market/item/%s" target="_blank">%s</a>' % (
                 i.id, i.name),
                  'itemid': i.id, 'price': i.args[1],
                  'run_date': datetime.datetime.strftime(i.trigger.run_date, '%Y-%m-%d %H:%M:%S')}
             l.append(d)
         else:
             if user == i.args[2]:
-                d = {'item_name': '<a href="http://www.cardhobby.com/market/item/%s" target="_blank">%s</a>' % (
+                d = {'item_name': '<a href="http://www.cardhobby.com.cn/market/item/%s" target="_blank">%s</a>' % (
                     i.id, i.name),
                      'itemid': i.id, 'price': i.args[1],
                      'run_date': datetime.datetime.strftime(i.trigger.run_date, '%Y-%m-%d %H:%M:%S')}
